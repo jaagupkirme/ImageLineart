@@ -1,7 +1,9 @@
 
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import application.ImageProcessing;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -30,7 +32,18 @@ public class ImageLineart extends Application {
 	double PANELWIDTH = 200;
 	private AnchorPane imagePane;
 
-	public AnchorPane loadImage(String filename){		
+	public AnchorPane loadImage(String filename){
+		//Soopi kood. PS! Ta ei tea mis ta teeb.
+		try {
+			ImageProcessing a = new ImageProcessing(filename);
+			a.gaussianFilter();
+			a.sobelFilter();
+			a.saveGrayImage();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//Soopi kood lõppeb
 		imagePane = new AnchorPane();
 		Slider slider = new Slider();
 		AnchorPane.setLeftAnchor(slider, 5.0);
@@ -106,6 +119,9 @@ public class ImageLineart extends Application {
 			public void handle(KeyEvent ke){
 				if (ke.getCode().equals(KeyCode.ENTER)){ //Ma ei tea, kuidas seda koodi saaks teise meetodisse panna (et seda ei peaks mitmes kohas kopeerima)
 					root.getChildren().remove(imagePane);
+					
+					//Convert Image
+					
 					imagePane = loadImage(fileNameInput.getText());
 					root.getChildren().add(imagePane);
 					System.out.println(imagePane.getPrefWidth());
