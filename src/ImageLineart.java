@@ -5,10 +5,14 @@ import java.io.IOException;
 
 import application.ImageProcessing;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -45,13 +49,7 @@ public class ImageLineart extends Application {
 		}
 		//Soopi kood lõppeb
 		imagePane = new AnchorPane();
-		Slider slider = new Slider();
-		AnchorPane.setLeftAnchor(slider, 5.0);
-		AnchorPane.setRightAnchor(slider, 0.0);
-		AnchorPane.setBottomAnchor(slider, 10.0);
-
-		imagePane.getChildren().add(slider);
-
+		
 		Image imgPreview = new Image(filename);
 		double x = imgPreview.getWidth();
 		double y = imgPreview.getHeight();
@@ -71,20 +69,49 @@ public class ImageLineart extends Application {
 			}
 		}
 
+		// SIIN MUUDA PILTI "IMAGE" JA LAE MUUDETUD PILT SISSE
+		
+		Image modImage = new Image("grayscale.jpg");
+		
+		//
+		
+		Slider slider = new Slider(0, image.getWidth(), 0);
+		AnchorPane.setLeftAnchor(slider, 5.0);
+		AnchorPane.setRightAnchor(slider, 0.0);
+		AnchorPane.setBottomAnchor(slider, 10.0);
+
+		imagePane.getChildren().add(slider);
+
+		
 		//Image image = new Image(filename, MAXWIDTH, MAXHEIGHT, true, true);
-		ImageView iv = new ImageView();
-		iv.setImage(image);
+		//ImageView iv = new ImageView();
+		//iv.setImage(image);
 
-		iv.setPreserveRatio(true);
+		//iv.setPreserveRatio(true);
+		
+		Canvas canvas = new Canvas(image.getWidth(), image.getHeight());
 
-
-		AnchorPane.setLeftAnchor(iv, 10.0);
+		
+		AnchorPane.setLeftAnchor(canvas, 10.0);
 		//AnchorPane.setRightAnchor(iv, 10.0);
 		//AnchorPane.setTopAnchor(iv, 10.0);
-		AnchorPane.setBottomAnchor(iv, 30.0);
-
-		imagePane.getChildren().add(iv);
-
+		AnchorPane.setBottomAnchor(canvas, 30.0);
+		
+		
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		
+		gc.drawImage(image, 0, 0, image.getWidth(), image.getHeight());
+		
+		imagePane.getChildren().add(canvas);
+		
+		
+		
+		slider.valueProperty().addListener(new ChangeListener<Number>() {
+			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
+				gc.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), 0, 0, image.getWidth(), image.getHeight());
+				gc.drawImage(modImage, 0, 0, slider.getValue(), modImage.getHeight(), 0, 0, slider.getValue(), modImage.getHeight());
+			}
+		});
 		//slider.prefWidth(imagePane.getWidth());
 
 
@@ -141,6 +168,8 @@ public class ImageLineart extends Application {
 			root.setPrefWidth(imagePane.getWidth());
 			fileNameInput.setText("");
 		});
+		
+		
 
 		//table.getChildren().addAll(fileNameInput, loadButton);
 		AnchorPane.setTopAnchor(panel, 10.0);
@@ -149,10 +178,10 @@ public class ImageLineart extends Application {
 
 		root.getChildren().add(panel);
 
-		imagePane = loadImage("civ6.jpg");
+		//imagePane = loadImage("civ6.jpg");
 
 
-		root.getChildren().add(imagePane);
+		//root.getChildren().add(imagePane);
 
 		Scene scene = new Scene(root, sceneWidth, sceneHeight);
 		primaryStage.setScene(scene);
