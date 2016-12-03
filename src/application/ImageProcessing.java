@@ -40,7 +40,7 @@ public class ImageProcessing {
 				  pilt.setRGB(x, y, color.getRGB());
 			  }
 		}
-		File ouptut = new File("grad_angle.jpg");
+		File ouptut = new File(System.getProperty("user.dir") + "\\bin\\grad_angle.jpg");
         ImageIO.write(pilt, "jpg", ouptut);
 	}
 	public void gaussianFilter(){

@@ -48,6 +48,10 @@ public class ImageLineart extends Application {
 			e.printStackTrace();
 		}
 		//Soopi kood lõppeb
+		
+		Image modImage = new Image("grad_angle.jpg");
+		
+		
 		imagePane = new AnchorPane();
 		
 		Image imgPreview = new Image(filename);
@@ -69,11 +73,7 @@ public class ImageLineart extends Application {
 			}
 		}
 
-		// SIIN MUUDA PILTI "IMAGE" JA LAE MUUDETUD PILT SISSE
-		
-		Image modImage = new Image("grayscale.jpg");
-		
-		//
+	
 		
 		Slider slider = new Slider(0, image.getWidth(), 0);
 		AnchorPane.setLeftAnchor(slider, 5.0);
