@@ -146,9 +146,6 @@ public class ImageLineart extends Application {
 			public void handle(KeyEvent ke){
 				if (ke.getCode().equals(KeyCode.ENTER)){ //Ma ei tea, kuidas seda koodi saaks teise meetodisse panna (et seda ei peaks mitmes kohas kopeerima)
 					root.getChildren().remove(imagePane);
-					
-					//Convert Image
-					
 					imagePane = loadImage(fileNameInput.getText());
 					root.getChildren().add(imagePane);
 					System.out.println(imagePane.getPrefWidth());
@@ -162,10 +159,14 @@ public class ImageLineart extends Application {
 		});
 
 		loadButton.setOnMouseClicked(e -> {
-			root.getChildren().remove(imagePane);
+			root.getChildren().remove(imagePane);			
 			imagePane = loadImage(fileNameInput.getText());
 			root.getChildren().add(imagePane);
-			root.setPrefWidth(imagePane.getWidth());
+			System.out.println(imagePane.getPrefWidth());
+			primaryStage.setWidth(imagePane.getPrefWidth()+PANELWIDTH+30);
+			primaryStage.setHeight(imagePane.getPrefHeight()+90);
+			AnchorPane.setLeftAnchor(panel, imagePane.getPrefWidth()+20);
+
 			fileNameInput.setText("");
 		});
 		
