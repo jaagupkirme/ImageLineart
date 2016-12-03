@@ -9,6 +9,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -25,7 +26,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
 
 
 public class ImageLineart extends Application {
@@ -36,7 +40,16 @@ public class ImageLineart extends Application {
 	double PANELWIDTH = 200;
 	private AnchorPane imagePane;
 
+	
+	
 	public AnchorPane loadImage(String filename){
+		Image imgPreview = null;
+		try {
+			imgPreview = new Image(filename);
+		} catch (IllegalArgumentException e){
+			showFileNotFoundPopup();
+			return emptyAnchorPane();
+		}
 		//Soopi kood. PS! Ta ei tea mis ta teeb.
 		try {
 			ImageProcessing a = new ImageProcessing(filename);
@@ -54,7 +67,7 @@ public class ImageLineart extends Application {
 		
 		imagePane = new AnchorPane();
 		
-		Image imgPreview = new Image(filename);
+		
 		double x = imgPreview.getWidth();
 		double y = imgPreview.getHeight();
 		double ratio = y/x;
@@ -72,7 +85,7 @@ public class ImageLineart extends Application {
 				image = new Image(filename);
 			}
 		}
-
+		
 	
 		
 		Slider slider = new Slider(0, image.getWidth(), 0);
@@ -125,12 +138,28 @@ public class ImageLineart extends Application {
 		return imagePane;
 	}
 
+	private void showFileNotFoundPopup() {
+		Stage popupScene = new Stage();
+		VBox popupBox = new VBox();
+		popupBox.getChildren().add(new Text("Faili ei leitud."));
+		popupBox.setAlignment(Pos.CENTER);
+		popupScene.setScene(new Scene(popupBox, 300, 60, Color.SNOW));
+		popupScene.show();
+	}
+
+	private AnchorPane emptyAnchorPane() {
+		AnchorPane illegalPane = new AnchorPane();
+		illegalPane.setPrefWidth(sceneWidth);
+		illegalPane.setPrefHeight(sceneHeight);
+		return illegalPane;
+	}
+
 	@Override
 	public void start(Stage primaryStage) {
 
 
 		AnchorPane root = new AnchorPane();
-
+		
 		GridPane panel = new GridPane();
 		TextField fileNameInput = new TextField();
 		fileNameInput.setPromptText("File name");
@@ -148,7 +177,7 @@ public class ImageLineart extends Application {
 					root.getChildren().remove(imagePane);
 					imagePane = loadImage(fileNameInput.getText());
 					root.getChildren().add(imagePane);
-					System.out.println(imagePane.getPrefWidth());
+					//System.out.println(imagePane.getPrefWidth());
 					primaryStage.setWidth(imagePane.getPrefWidth()+PANELWIDTH+30);
 					primaryStage.setHeight(imagePane.getPrefHeight()+90);
 					AnchorPane.setLeftAnchor(panel, imagePane.getPrefWidth()+20);
@@ -162,7 +191,7 @@ public class ImageLineart extends Application {
 			root.getChildren().remove(imagePane);			
 			imagePane = loadImage(fileNameInput.getText());
 			root.getChildren().add(imagePane);
-			System.out.println(imagePane.getPrefWidth());
+			//System.out.println(imagePane.getPrefWidth());
 			primaryStage.setWidth(imagePane.getPrefWidth()+PANELWIDTH+30);
 			primaryStage.setHeight(imagePane.getPrefHeight()+90);
 			AnchorPane.setLeftAnchor(panel, imagePane.getPrefWidth()+20);
