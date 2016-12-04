@@ -40,16 +40,12 @@ public class ImageLineart extends Application {
 	double PANELWIDTH = 200;
 	private AnchorPane imagePane;
 
-	
-	
+
+
 	public AnchorPane loadImage(String filename){
-		Image imgPreview = null;
-		try {
-			imgPreview = new Image(filename);
-		} catch (IllegalArgumentException e){
-			showFileNotFoundPopup();
-			return emptyAnchorPane();
-		}
+
+		
+
 		//Soopi kood. PS! Ta ei tea mis ta teeb.
 		try {
 			ImageProcessing a = new ImageProcessing(filename);
@@ -61,13 +57,13 @@ public class ImageLineart extends Application {
 			e.printStackTrace();
 		}
 		//Soopi kood lõppeb
-		
+
 		Image modImage = new Image("grad_angle.jpg");
-		
-		
+
+
 		imagePane = new AnchorPane();
-		
-		
+
+		Image imgPreview = new Image(filename);
 		double x = imgPreview.getWidth();
 		double y = imgPreview.getHeight();
 		double ratio = y/x;
@@ -85,9 +81,9 @@ public class ImageLineart extends Application {
 				image = new Image(filename);
 			}
 		}
-		
-	
-		
+
+
+
 		Slider slider = new Slider(0, image.getWidth(), 0);
 		AnchorPane.setLeftAnchor(slider, 5.0);
 		AnchorPane.setRightAnchor(slider, 0.0);
@@ -95,30 +91,30 @@ public class ImageLineart extends Application {
 
 		imagePane.getChildren().add(slider);
 
-		
+
 		//Image image = new Image(filename, MAXWIDTH, MAXHEIGHT, true, true);
 		//ImageView iv = new ImageView();
 		//iv.setImage(image);
 
 		//iv.setPreserveRatio(true);
-		
+
 		Canvas canvas = new Canvas(image.getWidth(), image.getHeight());
 
-		
+
 		AnchorPane.setLeftAnchor(canvas, 10.0);
 		//AnchorPane.setRightAnchor(iv, 10.0);
 		//AnchorPane.setTopAnchor(iv, 10.0);
 		AnchorPane.setBottomAnchor(canvas, 30.0);
-		
-		
+
+
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		
+
 		gc.drawImage(image, 0, 0, image.getWidth(), image.getHeight());
-		
+
 		imagePane.getChildren().add(canvas);
-		
-		
-		
+
+
+
 		slider.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val){
 				gc.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), 0, 0, image.getWidth(), image.getHeight());
@@ -144,10 +140,11 @@ public class ImageLineart extends Application {
 		popupBox.getChildren().add(new Text("File not found."));
 		popupBox.setAlignment(Pos.CENTER);
 		popupScene.setScene(new Scene(popupBox, 300, 60, Color.SNOW));
+		popupScene.setTitle("Error");
 		popupScene.show();
 	}
 
-	private AnchorPane emptyAnchorPane() {
+	private AnchorPane emptyAnchorPane() { // Method not used anymore
 		AnchorPane illegalPane = new AnchorPane();
 		illegalPane.setPrefWidth(sceneWidth);
 		illegalPane.setPrefHeight(sceneHeight);
@@ -159,7 +156,7 @@ public class ImageLineart extends Application {
 
 
 		AnchorPane root = new AnchorPane();
-		
+
 		GridPane panel = new GridPane();
 		TextField fileNameInput = new TextField();
 		fileNameInput.setPromptText("File name");
@@ -174,32 +171,36 @@ public class ImageLineart extends Application {
 		fileNameInput.setOnKeyPressed(new EventHandler<KeyEvent>(){
 			public void handle(KeyEvent ke){
 				if (ke.getCode().equals(KeyCode.ENTER)){ //Ma ei tea, kuidas seda koodi saaks teise meetodisse panna (et seda ei peaks mitmes kohas kopeerima)
-					root.getChildren().remove(imagePane);
-					imagePane = loadImage(fileNameInput.getText());
-					root.getChildren().add(imagePane);
-					//System.out.println(imagePane.getPrefWidth());
-					primaryStage.setWidth(imagePane.getPrefWidth()+PANELWIDTH+30);
-					primaryStage.setHeight(imagePane.getPrefHeight()+90);
-					AnchorPane.setLeftAnchor(panel, imagePane.getPrefWidth()+20);
+					if (fileExists(fileNameInput.getText())){
+						root.getChildren().remove(imagePane);
+						imagePane = loadImage(fileNameInput.getText());
+						root.getChildren().add(imagePane);
+						//System.out.println(imagePane.getPrefWidth());
+						primaryStage.setWidth(imagePane.getPrefWidth()+PANELWIDTH+30);
+						primaryStage.setHeight(imagePane.getPrefHeight()+90);
+						AnchorPane.setLeftAnchor(panel, imagePane.getPrefWidth()+20);
 
-					fileNameInput.setText("");
+						fileNameInput.setText("");
+					}
 				}
 			}
 		});
 
 		loadButton.setOnMouseClicked(e -> {
-			root.getChildren().remove(imagePane);			
-			imagePane = loadImage(fileNameInput.getText());
-			root.getChildren().add(imagePane);
-			//System.out.println(imagePane.getPrefWidth());
-			primaryStage.setWidth(imagePane.getPrefWidth()+PANELWIDTH+30);
-			primaryStage.setHeight(imagePane.getPrefHeight()+90);
-			AnchorPane.setLeftAnchor(panel, imagePane.getPrefWidth()+20);
+			if (fileExists(fileNameInput.getText())){
+				root.getChildren().remove(imagePane);
+				imagePane = loadImage(fileNameInput.getText());
+				root.getChildren().add(imagePane);
+				//System.out.println(imagePane.getPrefWidth());
+				primaryStage.setWidth(imagePane.getPrefWidth()+PANELWIDTH+30);
+				primaryStage.setHeight(imagePane.getPrefHeight()+90);
+				AnchorPane.setLeftAnchor(panel, imagePane.getPrefWidth()+20);
 
-			fileNameInput.setText("");
+				fileNameInput.setText("");
+			}
 		});
-		
-		
+
+
 
 		//table.getChildren().addAll(fileNameInput, loadButton);
 		AnchorPane.setTopAnchor(panel, 10.0);
@@ -216,6 +217,7 @@ public class ImageLineart extends Application {
 		Scene scene = new Scene(root, sceneWidth, sceneHeight);
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
+		primaryStage.setTitle("Image lineart generator");
 		primaryStage.show();
 		showTutorialPopup();
 	}
@@ -229,9 +231,19 @@ public class ImageLineart extends Application {
 		popupScene.setScene(new Scene(popupBox, 600, 60, Color.SNOW));
 		popupScene.setTitle("Tutorial");
 		popupScene.show();
-		
+
 	}
 
+	private boolean fileExists(String text) {
+		try{
+			Image image = new Image(text);
+			return true;
+		} catch (IllegalArgumentException e) {
+			showFileNotFoundPopup();
+			return false;
+		}
+	}
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
