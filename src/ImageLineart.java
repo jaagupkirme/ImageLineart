@@ -141,7 +141,7 @@ public class ImageLineart extends Application {
 	private void showFileNotFoundPopup() {
 		Stage popupScene = new Stage();
 		VBox popupBox = new VBox();
-		popupBox.getChildren().add(new Text("Faili ei leitud."));
+		popupBox.getChildren().add(new Text("File not found."));
 		popupBox.setAlignment(Pos.CENTER);
 		popupScene.setScene(new Scene(popupBox, 300, 60, Color.SNOW));
 		popupScene.show();
@@ -217,6 +217,19 @@ public class ImageLineart extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		primaryStage.show();
+		showTutorialPopup();
+	}
+
+	private void showTutorialPopup() {
+		Stage popupScene = new Stage();
+		FlowPane popupBox = new FlowPane();
+		popupBox.getChildren().add(new Text(
+				"Input the name of the image to be loaded (must be located in the /ImageLineart/bin/ folder)"));
+		popupBox.setAlignment(Pos.CENTER);
+		popupScene.setScene(new Scene(popupBox, 600, 60, Color.SNOW));
+		popupScene.setTitle("Tutorial");
+		popupScene.show();
+		
 	}
 
 	public static void main(String[] args) {
