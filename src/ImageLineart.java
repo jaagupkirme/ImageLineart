@@ -40,7 +40,28 @@ public class ImageLineart extends Application {
 	double PANELWIDTH = 200;
 	private AnchorPane imagePane;
 
-
+	public Image downScaleImage(String filename){
+		Image imgPreview = new Image(filename);
+		double x = imgPreview.getWidth();
+		double y = imgPreview.getHeight();
+		double ratio = y/x;
+		Image image;
+		
+		if (ratio > MAXHEIGHT/MAXWIDTH){
+			if (y > MAXHEIGHT){
+				image = new Image(filename, 0, MAXHEIGHT, true, true);
+			} else {
+				image = new Image(filename);
+			}
+		} else {
+			if (x > MAXWIDTH){
+				image = new Image(filename, MAXWIDTH, 0, true, true);
+			} else {
+				image = new Image(filename);
+			}
+		}
+		return image;
+	}
 
 	public AnchorPane loadImage(String filename){
 
@@ -58,29 +79,13 @@ public class ImageLineart extends Application {
 		}
 		//Soopi kood lõppeb
 
-		Image modImage = new Image("grad_angle.jpg");
+		Image modImage = downScaleImage("grad_angle.jpg");
 
 
 		imagePane = new AnchorPane();
 
-		Image imgPreview = new Image(filename);
-		double x = imgPreview.getWidth();
-		double y = imgPreview.getHeight();
-		double ratio = y/x;
-		Image image;
-		if (ratio > MAXHEIGHT/MAXWIDTH){
-			if (y > MAXHEIGHT){
-				image = new Image(filename, 0, MAXHEIGHT, true, true);
-			} else {
-				image = new Image(filename);
-			}
-		} else {
-			if (x > MAXWIDTH){
-				image = new Image(filename, MAXWIDTH, 0, true, true);
-			} else {
-				image = new Image(filename);
-			}
-		}
+		
+		Image image = downScaleImage(filename);
 
 
 
